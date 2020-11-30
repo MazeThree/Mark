@@ -1,23 +1,22 @@
-## HTML类
-1. 说说H5新特性
-2. 说说对h5存储/缓存的认识
-   > Cookie、Session Storage、Local Storage差异
 
--------
-## CSS类
+## HTML&&CSS类
 1. 介绍一下盒子模型
    > 如何改变盒子模型类型
 
    - 标准模式：width与height指的是内容区域的宽高，增加padding、border、margin会影响总体尺寸
    - 怪异模式：width与height指内容区+padding+border，增加padding、border不会影响总体尺寸
-
+2. 弹性布局介绍一下（原理，常见用法）
+3. 动画有了解吗
+4. 什么是重绘，什么是回流
+    > 哪个开销大？
+5. 说说对h5存储/缓存的认识
+   > Cookie、Session Storage、Local Storage差异
 ------
 ## JS类
 1. 说下你知道的数组/对象遍历方法，以及他们区别优缺点
 2. ==和===的区别， null和undefined的区别
-3. 介绍一下冒泡事件和捕获事件
-    > 实际应用举例
-
+3. 介绍一下冒泡事件和捕获事件（相似问题：10000个按钮怎么绑定事件）
+    > 实际应用举例   
     >如何阻止冒泡时间，原生方法/vue方法
 4. 说说es6+的新特性
     - 基础数据类型symbol、bigint
@@ -42,8 +41,14 @@
           return 'aa'
         }
       }
+      Class B extends A {
+        constructor(name) {
+          this.name = name
+          super()
+        }
+      }
       ```
-    > 说说es6的require和import导入的区别
+    > 说说es6的import和require导入的区别
       - import是在编译时加载，require在调用时加载，import效率更高
 require支持动态解析
       - commonJS（require）是输出值的复制，es6（import）是值的引用
@@ -51,6 +56,7 @@ require支持动态解析
    > 哪些属于宏任务、哪些属于微任务
 6.  JS判断类型的方法及区别
     - typeof：判断基本类型，无法判断null
+       > js 在底层存储变量的时候，会在变量的机器码的低位1-3位存储其类型信息(000：对象,010：浮点数,100：字符串,110：布尔,1：整数),null是0,因此也会被判断为object。同时object不会判断具体是哪种object，要用instanceof
     - instanceof：检测A的对象原型是否在B上，返回Boolean
     - constructor： A.constructor === 'type'
     - Object.prototype.toString.call(A): 最全面的方法，可以判断所有类型
@@ -64,7 +70,7 @@ require支持动态解析
      - 在JS中，对象都有__proto__属性，一般这个是被称为隐式的原型，该隐式原型指向构造该对象的构造函数的原型。
 　　函数比较特殊，它除了和其他对象一样有__proto__属性，还有自己特有的属性----prototype，这个属性是一个指针，指向一个包含所有实例共享的属性和方法的对象，称之为原型对象。原型对象也有一个constructor属性，该属性指回该函数。
       - 比较详细的原型链介绍 [原型链介绍](https://blog.csdn.net/xiaoermingn/article/details/80745117)
-9. new函数做了什么
+9. new函数做了什么   
     **使用 new 操作符。以这种方式调用构造函数实际上会经历以下 4
 个步骤：**
     - 创建一个新对象
@@ -73,13 +79,6 @@ require支持动态解析
     -  返回新对象
   > 手写一个new函数  
 ```javascript
-    /**
-    * 冒泡排序
-    * 思路：遍历数组，如当前数大于/小于后一位，则交换，一轮遍历出一个最大/最小值,直到结束
-    * @param {Function} fn
-    * @param args
-    * @returns {Object}
-    */
     function myNew(fn, ...args) {
       let obj = Object.create(fn.prototype)
       let res = fn.call(obj, ...args)
@@ -96,7 +95,47 @@ require支持动态解析
     > 说说你对this指向的认识
     > 箭头函数的this指向问题
     > 说说call、apply、bind三者的区别
+
 13. 说说防抖和节流（原理、区别、应用）
+    ```javascript
+    /**
+     * 手写一个防抖
+    * 含义：所谓防抖，是指防止在单位时间内多次触发产生的抖动
+    * 思路： 时间被触发n秒后再执行回调，如何n秒内在此触发，则重新计时
+    * @param {Function} fn 
+    * @param {Number} delay 
+    */
+    function debounce (fn, delay) {
+      let timer = null
+      return function (...args) {
+        let context = this
+        if (timer) clearTimeout(timer)
+        timer = setTimeout(function () {
+          fn.apply(context, args)
+        }, delay)
+      }
+    }
+
+    /**
+     * 手写一个节流
+    * 思路： 时间被触发n秒后再执行回调，如何n秒内在此触发，则忽略
+    * @param {Function} fn 
+    * @param {Number} delay 
+    */
+    function throttle (fn, delay) {
+      let flag = true, timer = null
+      return function (...args) {
+        let context = this
+        if (!flag) return
+        flag = false
+        clearTimeout(timer)
+        timer = setTimeout(function () {
+          fn.apply(context, args)
+          flag = true
+        }, delay)
+      }
+    }
+    ```
     
 ------
 ## VUE类
@@ -137,7 +176,6 @@ require支持动态解析
 13. 扯一扯对于vue源码的研究
     - 双向绑定原理（数据劫持+发布订阅，Object.defineProperty/Proxy）
     - 路由
-
 ## 网络及其他类
 1. 在浏览器输入一个url发生了什么？
 2. 网络状态码以及其含义
@@ -145,5 +183,26 @@ require支持动态解析
 3. 说说你知道的前端优化方案   
    **&emsp;&emsp;js、css代码合并，开启gzip压缩，减少http请求，图片资源较小的可以用工具转成base64内嵌，减少http请求，或者进行雪碧图合并，小的icon使用字体图标代替，不会进行修改的依赖库文件使用cdn托管；单页应用路由懒加载。有效的利用缓存机制。尽量不直接操作dom，减少使用css表达式，避免较多的页面回流。在构建方面webpack有很多优化配置及插件，其次就是编码方面的优化。**
    ![前端优化方案](../assets/img/前端优化方案.png)
-4. 前端安全问题（XSS、CSRF）
+4. 前端安全问题（XSS、CSRF、SQL注入）
 5. 介绍一下浏览器缓存
+6. 了解webpack吗
+    - webpack的基本组成
+      > - 入口
+      > - 输出
+      > - loader
+      > - 插件（plugins）
+      > - externals
+      > - ......
+    - webpack的基本构建原理
+    - 用webpack做过的一些性能优化
+      > - 资源按需加载
+      > - 小图片自动转base64(减少http请求)
+      > - 配置externals启用cdn加速，同时减少包体积
+    - 常用的一些插件
+      > - BundleAnalyzerPlugin(资源包分析工具)
+      > - CompressionPlugin(资源包压缩Gzip工具)
+      > - babel-plugin-component(按需加载插件)
+      > - postcss-px-to-viewport(将px单位自动转换成viewport单位,适配移动端)
+7. 说说图片懒加载的原理呗（相似问题：骨架屏、页面懒加载）  
+    **介绍:所谓图片懒加载是指用户进入页面时只加载用户视窗范围内的图片资源，以提高页面加载速度，优化用户体验**  
+    **原理:给每个img标签添加一个自定义属性如data-src存储图片真实地址，图片默认展示地址用统一的一个，js添加一个滚动条监听事件，计算图片是否进入视窗范围，进入则将地址替换为data-src内实际地址**

@@ -49,8 +49,10 @@
 <https://animate.style/>
 >一个前端动画库
 
-### 书籍清单
+## 书籍清单
 > - JavaScript高级程序设计
 > - ES6标准入门
 > - 深入浅出Webpack
+> - 算法图解
+> - 你不知道的JavaScript
 

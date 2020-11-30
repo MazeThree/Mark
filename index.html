@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+
+<body>
+  <script>
+    var reorganizeString = function (S) {
+      debugger
+      if (S.length < 2) return S
+      S = S.split('')
+      for (let i = 0; i < S.length - 1; i++) {
+        if (S[i] !== S[i + 1]) continue
+        let flag = false
+        for (let j = i + 1; j < S.length; j++) {
+          if (S[j + 1] && S[i + 1] !== S[j + 1]) {
+            flag = true
+            let temp = S[i + 1]
+            S[i + 1] = S[j + 1]
+            S[j + 1] = temp
+            break
+          }
+        }
+        if (!flag) return ''
+      }
+      return S.join('')
+    };
+    reorganizeString('aaab')
+  </script>
+</body>
+
+</html>

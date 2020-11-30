@@ -374,43 +374,6 @@ class Promise {
   }
 }
 
-/**
- * 手写一个防抖
- * 含义：所谓防抖，是指防止在单位时间内多次触发产生的抖动
- * 思路： 时间被触发n秒后再执行回调，如何n秒内在此触发，则重新计时
- * @param {Function} fn 
- * @param {Number} delay 
- */
-function debounce (fn, delay) {
-  let timer = null
-  return function (...args) {
-    let context = this
-    if (timer) clearTimeout(timer)
-    timer = setTimeout(function () {
-      fn.apply(context, args)
-    }, delay)
-  }
-}
-
-/**
- * 手写一个节流
- * 思路： 时间被触发n秒后再执行回调，如何n秒内在此触发，则忽略
- * @param {Function} fn 
- * @param {Number} delay 
- */
-function throttle (fn, delay) {
-  let flag = true, timer = null
-  return function (...args) {
-    let context = this
-    if (!flag) return
-    flag = false
-    clearTimeout(timer)
-    timer = setTimeout(function () {
-      fn.apply(context, args)
-      flag = true
-    }, delay)
-  }
-}
 
 /**
  * 数组乱序（洗牌）
@@ -591,11 +554,20 @@ function bubble (arr) {
   return arr
 }
 
-/**
- * 实现一个算法，来完成字符串相加，比如 "111" + ”2222“ = ”2333“。(高精度算法)
- * @param {String} st1
- * @param {String} st2
- */
 
 // 数组取并集交集补集差集
-// const arr1 = [1,2,3,4,5], arr2 = [5,6,7,8,9], _arr1Set = new Set(arr1), _arr2Set = new Set(arr2);// 交集let intersection = arr1.filter(item => _arr2Set.has(item))// 并集let union = Array.from(new Set([...arr1, ...arr2]))// 补集 两个数组各自没有的集合let complement = [...arr1.filter(item => !_arr2Set.has(item)), ...arr2.filter(item => !_arr1Set.has(item))]// 差集 数组arr1相对于arr2所没有的let diff = arr1.filter(item => !_arr2Set.has(item))console.log('arr1: ', arr1);console.log('arr2: ', arr2);console.log('交集', intersection);console.log('并集', union);console.log('补集', complement);console.log('差集', diff);
+const arr1 = [1,2,3,4,5], arr2 = [5,6,7,8,9], _arr1Set = new Set(arr1), _arr2Set = new Set(arr2);
+// 交集
+let intersection = arr1.filter(item => _arr2Set.has(item))
+// 并集
+let union = Array.from(new Set([...arr1, ...arr2]))
+// 补集 两个数组各自没有的集合
+let complement = [...arr1.filter(item => !_arr2Set.has(item)), ...arr2.filter(item => !_arr1Set.has(item))]
+// 差集 数组arr1相对于arr2所没有的
+let diff = arr1.filter(item => !_arr2Set.has(item))
+console.log('arr1: ', arr1);
+console.log('arr2: ', arr2);
+console.log('交集', intersection);
+console.log('并集', union);
+console.log('补集', complement);
+console.log('差集', diff);
