@@ -49,10 +49,23 @@
 <https://animate.style/>
 >一个前端动画库
 
+<https://www.bootcss.com/p/websafecolors/>
+> web安全色
+
+<https://tinypng.com/>
+> 图片压缩网站，不影响质量优化图片大小
+
 ## 书籍清单
+### 技术类
 > - JavaScript高级程序设计
 > - ES6标准入门
 > - 深入浅出Webpack
 > - 算法图解
 > - 你不知道的JavaScript
 
+### 其他类
+> - 君主论
+> - 血酬定律
+> - 潜规则
+> - 爱的博弈
+> - 洞穴奇案
