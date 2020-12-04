@@ -2,7 +2,6 @@
 ## HTML&&CSS类
 1. 介绍一下盒子模型
    > 如何改变盒子模型类型
-
    - 标准模式：width与height指的是内容区域的宽高，增加padding、border、margin会影响总体尺寸
    - 怪异模式：width与height指内容区+padding+border，增加padding、border不会影响总体尺寸
 2. 弹性布局介绍一下（原理，常见用法）
@@ -224,3 +223,23 @@ require支持动态解析
     > 顺便说下单点登录用户信息的存储方式
     - cookie(安全问题：设置httpOnly, 过期时间)
     - session
+9. 如何处理跨域问题
+    [解析参考]<https://segmentfault.com/a/1190000011145364>
+    - jsonp:利用js没有域的限制，动态创建script标签传递一个callback参数给服务端，然后服务端返回数据时会将这个callback参数作为函数名来包裹住JSON数据
+      ```javascript
+        let script = document.createElement('script')
+        script.type =  'text/javascript'
+        script.src = 'https://xxx/aaa?callback=getData'
+        document.head.appendChild(script)
+        function getData(res) {
+          console.log(res)
+        }
+      ```
+    -  document.domain + iframe跨域
+    -  location.hash + iframe
+    -  window.name + iframe跨域
+    -  postMessage跨域（窗口传参）
+    -  跨域资源共享（CORS）
+    -  nginx代理跨域（反向代理）
+    -  nodejs中间件代理跨域
+    -  WebSocket协议跨域

@@ -571,3 +571,42 @@ console.log('交集', intersection);
 console.log('并集', union);
 console.log('补集', complement);
 console.log('差集', diff);
+
+// 实现一个事件触发器，包含简单的事件注册、触发及销毁
+class eventEmiter {
+  constructor () {
+    this.events = {}
+    // this.events = {
+    //   test: [
+    //     (data) => {
+    //       console.log(data)
+    //     },
+    //     data => data * data
+    //   ]
+    // }
+  }
+  on (name, fn) {
+    if (this.events[name]) {
+      this.events[name].push(fn)
+    } else {
+      this.events[name] = [fn]
+    }
+  }
+  emit (name, ...args) {
+    if (this.events[name]) {
+      this.events[name].forEach(item => {
+        item.call(this, ...args)
+      })
+    } else {
+      console.log('请先注册该事件！')
+    }
+  }
+  remove (name) {
+    delete this.events[name]
+  }
+}
+let myEvent = new eventEmiter()
+myEvent.on('getData', data => {
+  console.log(data)
+})
+myEvent.emit('getData', 22)
