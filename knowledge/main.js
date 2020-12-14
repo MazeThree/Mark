@@ -1,6 +1,6 @@
 
 Function.prototype.myCall = function (context) {
-  if (typeof context === 'undefined' || context === null) {
+  if (typeof context === 'undefined' || typeof context === null) {
     context = window
   }
   context.fn = this
@@ -610,3 +610,8 @@ myEvent.on('getData', data => {
   console.log(data)
 })
 myEvent.emit('getData', 22)
+
+// 字段过滤的一种方法
+let a = {q: 1, w: 2, e: 3}
+b = JSON.parse(JSON.stringify(a, ['q']))
+// b = {q: 1}
