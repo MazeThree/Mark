@@ -247,6 +247,6 @@ require支持动态解析
     -  window.name + iframe跨域
     -  postMessage跨域（窗口传参）
     -  跨域资源共享（CORS）
-    -  nginx代理跨域（反向代理）
+    -  nginx代理跨域（反向代理）(服务器与服务器之间没有跨域限制)
     -  nodejs中间件代理跨域
     -  WebSocket协议跨域
