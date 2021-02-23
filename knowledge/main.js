@@ -117,7 +117,7 @@ console.log(child1.name)
 /** 
  * es5组合继承
  * 在构造函数继承的基础上添加原型链继承，二者结合
- * 缺点：穿件子类实例时，会有两份相同属性和方法
+ * 缺点：创建子类实例时，会有两份相同属性和方法
 */
 Child1.prototype = new People()
 Child1.prototype.constructor = Child1
