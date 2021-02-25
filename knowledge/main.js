@@ -4,7 +4,9 @@ Function.prototype.myCall = function (context) {
     context = window
   }
   context.fn = this
+  // 取出函数内的参数
   let args = [...this.arguments].slice(1)
+  // 如果是apply,直接放args即可
   let result = context.fn(...args)
   delete context.fn
   return result
