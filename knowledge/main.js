@@ -624,3 +624,45 @@ myEvent.emit('getData', 22)
 let a = {q: 1, w: 2, e: 3}
 b = JSON.parse(JSON.stringify(a, ['q']))
 // b = {q: 1}
+
+// 实现一个LazyMan
+class LazyMan {
+  constructor(name) {
+    this.name = name
+    this.queue = []
+    console.log(`Hi, this is ${name}`)
+    setTimeout(() => {
+      console.log('我执行了,此时队列',this.queue )
+      this.next()
+    }, 0)
+  }
+  next () {
+    const fn = this.queue.shift()
+    fn && fn()
+  }
+  register (fn, isFirst) {
+    isFirst ? this.queue.unshift(fn) : this.queue.push(fn)
+  }
+  eat (food) {
+    const _eat = () => {
+      console.log(`Eat ${food}`)
+      this.next()
+    }
+    this.register(_eat)
+    return this
+  }
+  sleep(s, isFirst = false) {
+    const time = s * 1000
+    const _sleep = () => {
+      console.log(`等待${time}秒后起来`)
+      setTimeout(() => {
+        this.next()
+      }, time)
+    }
+    this.register(_sleep, isFirst)
+    return this
+  }
+  sleepFirst(s) {
+    return this.sleep(s, true)
+  }
+}
