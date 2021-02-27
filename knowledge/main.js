@@ -401,21 +401,17 @@ function shuffle (arr) {
  * 实现add(1)(2)(3),函数柯里化
  * 函数柯里化概念： 柯里化（Currying）是把接受多个参数的函数转变为接受一个单一参数的函数，并且返回接受余下的参数且返回结果的新函数的技术。
  */
-function currying () {
-  let args = [...arguments]
-  temp.getValue = () => {
-    return args.reduce((a, b) => a + b, 0)
-  }
-  function temp (...arg) {
-    if (arg.length) {
-      args = [...args, ...arg]
-      return temp
-    }
-  }
-  return temp
+const curry = (fn, ...args) => {
+  args.length >= fn.length ? fn(...args) : (..._args) => curry(fn, ...args, ..._args)
 }
-
-currying(1)(2)(3)()
+function add1(x, y, z) {
+  return x + y + z;
+}
+const add = curry(add1);
+console.log(add(1, 2, 3));
+console.log(add(1)(2)(3));
+console.log(add(1, 2)(3));
+console.log(add(1)(2, 3));
 
 
 /**
