@@ -11,6 +11,13 @@ Function.prototype.myCall = function (context) {
   delete context.fn
   return result
 }
+// 实现一个bind
+Function.prototype.myBind = function (fn, ...args) {
+  let _this = this
+  return function () {
+    return _this.call(fn, ...args)
+  }
+}
 /**
  * 原型链:每个函数都有一个prototype属性（显式原型），对象具有一个__proto__属性（隐式原型）
  * 当访问一个对象的某个属性时，会先在这个对象本身属性上查找，如果没有找到，则会去它的__proto__隐式原型上查找，即它的构造函数的prototype，如果还没有找到就会再在构造函数的prototype的__proto__中查找，这样一层一层向上查找就会形成一个链式结构，我们称为原型链。
