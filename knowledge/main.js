@@ -662,3 +662,46 @@ class LazyMan {
     return this.sleep(s, true)
   }
 }
+
+// 实现一个观察者模式      
+// 被观察者   
+class Subject {
+  constructor(name) {
+    this.name = name
+    // 观察者队列
+    this.observers = []
+    this.state = "被观察状态"
+  }
+  // 注册观察者
+  attach(observer) {
+    this.observers.push(observer)
+  }
+  // 触发状态修改，通知观察者
+  setState(newState) {
+    this.state = newState
+    // 如果是发布订阅者模式的话，这里直接调用，而不是耦合观察者的方法
+    this.observers.forEach(item => item.update(this.state))
+    // this.observers.forEach(item => item(...params))
+  }
+}
+// 观察者
+class ObServer {
+  constructor(name, socre) {
+    this.name = name
+    this.socre = socre
+  }
+  update(state) {
+    if (Number(state) > this.socre) {
+      console.log(`我是${this.name}, 我没过线`)
+    } else {
+      console.log(`我是${this.name}, 过线了美滋滋`)
+    }
+  }
+}
+
+let sub = new Subject('考研分数线')
+let student1 = new ObServer('张三', 380)
+let student2 = new ObServer('李四', 420)
+sub.attach(student1)
+sub.attach(student2)
+sub.setState(400)
