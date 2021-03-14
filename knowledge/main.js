@@ -538,6 +538,15 @@ function shuffle (arr) {
   }
   return arr
 }
+function shuffle(arr) {
+  arr.forEach((item, index) => {
+    let i = Math.floor(Math.random() * (arr.length - index) + index)
+    if (index !== i) {
+      [arr[i], arr[index]] = [arr[index], arr[i]]
+    }
+  })
+  return arr
+}
 
 /**
  * 冒泡排序
@@ -705,3 +714,97 @@ let student2 = new ObServer('李四', 420)
 sub.attach(student1)
 sub.attach(student2)
 sub.setState(400)
+
+class myPromise {
+  constructor(executor) {
+    this.status = 'pending'
+    this.value = undefined
+    this.reason = undefined
+    this.fulfilledCallback = []
+    this.rejectedCallback = []
+    let resolve = (value) => {
+      if (this.status === 'pending') {
+        this.status = 'fulfilled'
+        this.value = value
+        this.fulfilledCallback.forEach(fn => fn())
+      }
+    }
+    let reject = (value) => {
+      if (this.status === 'pending') {
+        this.status = 'rejected'
+        this.reason = value
+        this.rejectedCallback.forEach(fn => fn())
+      }
+    }
+    try {
+      executor(resolve, reject)
+    } catch(err) {
+      console.log(err)
+    }
+  }
+  then(onFulfilled, onRejected) {
+    if (this.status === 'fulfilled') {
+      onFulfilled(this.value)
+    }
+    if (this.status === 'rejected') {
+      onRejected(this.reason)
+    }
+    if (this.status === 'pending') {
+      this.fulfilledCallback.push(() => {onFulfilled(this.value)})
+      this.rejectedCallback.push(() => {onRejected(this.reason)})
+    }
+  }
+}
+
+// 手写一个深拷贝
+function deepClone (target) {
+  if (typeof target === 'Object') {
+    let obj = Array.isArray(target) ? [] : {}
+    for (item in target) {
+      obj[item] = deepClone(target[item])
+    }
+    return obj
+  } else {
+    return target
+  }
+}
+
+class LazyMan {
+  constructor(name) {
+    console.log(`Hi, I am ${name}`)
+    this.queue = []
+    setTimeout(() => {
+      this.next()
+    },0)
+  }
+  next () {
+    let fn = this.queue.shift()
+    fn && fn()
+  }
+  register (fn, isFirst = false) {
+    isFirst ? this.queue.unshift(fn) : this.queue.push(fn)
+  }
+  sleep(time, isFirst = false) {
+    const fn = () => {
+      setTimeout(() => {
+        console.log(`睡了${time}小时起来`)
+        this.next()
+      }, time * 1000)
+    }
+    this.register(fn, isFirst)
+    return this
+  }
+  eat(type) {
+    const fn = () => {
+      console.log(`I am ${type}`)
+      this.next()
+    }
+    this.register(fn)
+    return this
+  }
+  sleepFirst(time) {
+    this.sleep(time, true)
+    return this
+  }
+}
+
