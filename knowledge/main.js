@@ -416,21 +416,17 @@ function shuffle (arr) {
  * 实现add(1)(2)(3),函数柯里化
  * 函数柯里化概念： 柯里化（Currying）是把接受多个参数的函数转变为接受一个单一参数的函数，并且返回接受余下的参数且返回结果的新函数的技术。
  */
-function currying () {
-  let args = [...arguments]
-  temp.getValue = () => {
-    return args.reduce((a, b) => a + b, 0)
-  }
-  function temp (...arg) {
-    if (arg.length) {
-      args = [...args, ...arg]
-      return temp
-    }
-  }
-  return temp
+const curry = (fn, ...args) => {
+  args.length >= fn.length ? fn(...args) : (..._args) => curry(fn, ...args, ..._args)
 }
-
-currying(1)(2)(3)()
+function add1(x, y, z) {
+  return x + y + z;
+}
+const add = curry(add1);
+console.log(add(1, 2, 3));
+console.log(add(1)(2)(3));
+console.log(add(1, 2)(3));
+console.log(add(1)(2, 3));
 
 
 /**
@@ -548,6 +544,15 @@ function shuffle (arr) {
       [arr[i], arr[index]] = [arr[index], arr[i]]
     }
   }
+  return arr
+}
+function shuffle(arr) {
+  arr.forEach((item, index) => {
+    let i = Math.floor(Math.random() * (arr.length - index) + index)
+    if (index !== i) {
+      [arr[i], arr[index]] = [arr[index], arr[i]]
+    }
+  })
   return arr
 }
 
@@ -675,25 +680,139 @@ class LazyMan {
   }
 }
 
-// 实现一个订阅者模式
-class Observer {
+// 实现一个观察者模式      
+// 被观察者   
+class Subject {
   constructor(name) {
     this.name = name
-    console.log('生成一个发布者:' + name)
-    this.status = null
-    this.subList = {}
+    // 观察者队列
+    this.observers = []
+    this.state = "被观察状态"
   }
-  subject (fn, name) {
-    this.subList[name] = fn
+  // 注册观察者
+  attach(observer) {
+    this.observers.push(observer)
   }
-  emit (status) {
-    this.status = status
-    for(let item in this.subList) {
-      console.log(this.subList, item)
-      this.subList[item](status)
-    }
-  }
-  fire (name) {
-    delete this.subList[name]
+  // 触发状态修改，通知观察者
+  setState(newState) {
+    this.state = newState
+    // 如果是发布订阅者模式的话，这里直接调用，而不是耦合观察者的方法
+    this.observers.forEach(item => item.update(this.state))
+    // this.observers.forEach(item => item(...params))
   }
 }
+// 观察者
+class ObServer {
+  constructor(name, socre) {
+    this.name = name
+    this.socre = socre
+  }
+  update(state) {
+    if (Number(state) > this.socre) {
+      console.log(`我是${this.name}, 我没过线`)
+    } else {
+      console.log(`我是${this.name}, 过线了美滋滋`)
+    }
+  }
+}
+
+let sub = new Subject('考研分数线')
+let student1 = new ObServer('张三', 380)
+let student2 = new ObServer('李四', 420)
+sub.attach(student1)
+sub.attach(student2)
+sub.setState(400)
+
+class myPromise {
+  constructor(executor) {
+    this.status = 'pending'
+    this.value = undefined
+    this.reason = undefined
+    this.fulfilledCallback = []
+    this.rejectedCallback = []
+    let resolve = (value) => {
+      if (this.status === 'pending') {
+        this.status = 'fulfilled'
+        this.value = value
+        this.fulfilledCallback.forEach(fn => fn())
+      }
+    }
+    let reject = (value) => {
+      if (this.status === 'pending') {
+        this.status = 'rejected'
+        this.reason = value
+        this.rejectedCallback.forEach(fn => fn())
+      }
+    }
+    try {
+      executor(resolve, reject)
+    } catch(err) {
+      console.log(err)
+    }
+  }
+  then(onFulfilled, onRejected) {
+    if (this.status === 'fulfilled') {
+      onFulfilled(this.value)
+    }
+    if (this.status === 'rejected') {
+      onRejected(this.reason)
+    }
+    if (this.status === 'pending') {
+      this.fulfilledCallback.push(() => {onFulfilled(this.value)})
+      this.rejectedCallback.push(() => {onRejected(this.reason)})
+    }
+  }
+}
+
+// 手写一个深拷贝
+function deepClone (target) {
+  if (typeof target === 'Object') {
+    let obj = Array.isArray(target) ? [] : {}
+    for (item in target) {
+      obj[item] = deepClone(target[item])
+    }
+    return obj
+  } else {
+    return target
+  }
+}
+
+class LazyMan {
+  constructor(name) {
+    console.log(`Hi, I am ${name}`)
+    this.queue = []
+    setTimeout(() => {
+      this.next()
+    },0)
+  }
+  next () {
+    let fn = this.queue.shift()
+    fn && fn()
+  }
+  register (fn, isFirst = false) {
+    isFirst ? this.queue.unshift(fn) : this.queue.push(fn)
+  }
+  sleep(time, isFirst = false) {
+    const fn = () => {
+      setTimeout(() => {
+        console.log(`睡了${time}小时起来`)
+        this.next()
+      }, time * 1000)
+    }
+    this.register(fn, isFirst)
+    return this
+  }
+  eat(type) {
+    const fn = () => {
+      console.log(`I am ${type}`)
+      this.next()
+    }
+    this.register(fn)
+    return this
+  }
+  sleepFirst(time) {
+    this.sleep(time, true)
+    return this
+  }
+}
+

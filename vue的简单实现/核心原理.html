@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>vue2.0响应式原理</title>
+</head>
+<body>
+<div id="app">hello</div>
+
+<script>
+  // 绑定单个
+  let data = {
+    msg: 'hello word',
+    count: 10
+  }
+  let vm = {}
+  Object.defineProperty(vm, 'msg', {
+    configurable: true, // 是否能被改变，是否能被delete删除
+    enumerable: true, // 是否可枚举，遍历
+    get() {
+      console.log('get：' + data.msg)
+      return data.msg
+    },
+    set(newVal) {
+      if(data.msg === newVal) return
+      data.msg = newVal
+      console.log('set：' + data.msg)
+      document.getElementById('app').innerText = data.msg
+    }
+  })
+  console.log(vm.msg)
+  vm.msg = 'xxx'
+
+  console.log('===================')
+  // 绑定多个
+
+  let data2 = {
+    msg: 'hello word',
+    count: 10,
+    obj: {
+      name: '你好啊'
+    },
+    arr: [1, 2, 3]
+  }
+
+  let vm2 = {
+    data: data2
+  }
+
+  function defineProperty(obj, key, val) {
+    // 如果value是对象，则继续对他下级成员进行响应式监听
+    observer(val)
+    Object.defineProperty(obj, key, {
+      configurable: true, // 是否能被改变，是否能被delete删除
+      enumerable: true, // 是否可枚举，遍历
+      get() {
+        console.log('get：' + val)
+        return val
+      },
+      set(newVal) {
+        if(val === newVal) return
+        // 如果新设置的值是对象，则继续对他下级成员进行响应式监听
+        observer(newVal)
+        val = newVal
+        console.log('set：' + key + '：' + val)
+      }
+    })
+  }
+  function observer(data) {
+    // 如果不是对象，则返回
+    if(!data || typeof data != 'object' ) return
+    Object.keys(data).forEach(key => {
+      defineProperty(data, key, data[key])
+    })
+  }
+  observer(vm2.data)
+  console.log(vm2)
+</script>
+</body>
+</html>

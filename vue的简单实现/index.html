@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>实现一个简单的vue</title>
+</head>
+<body>
+  <div id="app">
+    <h2>差值表达式</h2>
+    <div v-on:click="handleClick">msg： <b>{{ msg }}</b></div>
+    <div>count： <b>{{ count }}</b></div>
+
+    <h2>v-text</h2>
+    <div v-text="msg"></div>
+
+    <h2>v-html</h2>
+    <div v-html="vHtml"></div>
+
+    <h2>v-model</h2>
+    <input type="text" v-model="msg" >
+    <input type="text" v-model="count" >
+  </div>
+
+  <script src="./js/dep.js"></script>
+  <script src="./js/watcher.js"></script>
+  <script src="./js/compiler.js"></script>
+  <script src="./js/observer.js"></script>
+  <script src="./js/vue.js"></script>
+  <script>
+    let h = '你好啊'
+    let vm = new Vue({
+      el: '#app',
+      data: {
+        msg: 'hello world',
+        count: 100,
+        vHtml: `<p style="color: pink;">${h}</p>`,
+        obj: {
+          name: 'xxx'
+        }
+      },
+      methods: {
+        handleClick() {
+          console.log(this.msg)
+        }
+      },
+    })
+
+  </script>
+</body>
+</html>
