@@ -364,19 +364,27 @@ class Promise {
   // then方法，携带两个参数
   then (onFulfilled, onRejected) {
     let promise2 = new Promise((resolve, reject) => {
-      if (this.state === 'fulfilled') {
-        onFulfilled(this.value)
-      }
-      if (this.state === 'rejected') {
-        onRejected(this.reason)
-      }
-      if (this.state === 'pending') {
-        this.onResolvedCallback.push(() => {
-          onFulfilled(this.value)
-        })
-        this.onRejectedCallback.push(() => {
-          onRejected(this.reason)
-        })
+      try {
+        if (this.state === 'fulfilled') {
+          let value = onFulfilled(this.value)
+          resolve(value)
+        }
+        if (this.state === 'rejected') {
+          let value = onRejected(this.reason)
+          resolve(value)
+        }
+        if (this.state === 'pending') {
+          this.onResolvedCallback.push(() => {
+            let value = onFulfilled(this.value)
+            resolve(value)
+          })
+          this.onRejectedCallback.push(() => {
+            let value = onRejected(this.reason)
+            resolve(value)
+          })
+        }
+      } catch (err) {
+        reject(err)
       }
     })
     return promise2
@@ -664,5 +672,28 @@ class LazyMan {
   }
   sleepFirst(s) {
     return this.sleep(s, true)
+  }
+}
+
+// 实现一个订阅者模式
+class Observer {
+  constructor(name) {
+    this.name = name
+    console.log('生成一个发布者:' + name)
+    this.status = null
+    this.subList = {}
+  }
+  subject (fn, name) {
+    this.subList[name] = fn
+  }
+  emit (status) {
+    this.status = status
+    for(let item in this.subList) {
+      console.log(this.subList, item)
+      this.subList[item](status)
+    }
+  }
+  fire (name) {
+    delete this.subList[name]
   }
 }
